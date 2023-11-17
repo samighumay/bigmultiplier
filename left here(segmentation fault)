@@ -1,0 +1,109 @@
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+    string a, b;
+    vector<int> veca, vecb; // vector to gather integers from string
+    cin >> a >> b;
+
+    // gathering numbers
+    if (a.size() > b.size()) {
+        for (int i = 0; i < a.size(); i++) {
+            veca.push_back(a[i] - '0');
+            if (i < b.size()) {
+                vecb.push_back(b[i] - '0');
+            }
+        }
+    } else if (a.size() <= b.size()) {
+        for (int i = 0; i < b.size(); i++) {
+            veca.push_back(b[i] - '0');
+            if (i < a.size()) {
+                vecb.push_back(a[i] - '0');
+            }
+        }
+    }
+
+    // multiplication
+    reverse(veca.begin(), veca.end());
+    reverse(vecb.begin(), vecb.end());
+    vector<vector<int>> result; // 2D vector for multiplication results
+    int carry = 0, maxsize = veca.size() + vecb.size() -1;
+
+    for (int i = 0; i < vecb.size(); i++) {
+        carry = 0;
+        vector<int> ans1 = {};
+        for(int k = 0; k < i; k++){
+            ans1.push_back(0);
+        }
+        bool plus = 0;
+        for (int j = 0; j < veca.size(); j++) {
+            int multiplication = (veca[j] * vecb[i]) + carry;
+            if (j == veca.size() - 1) {
+                ans1.push_back(multiplication);
+                if(multiplication >= 10){
+                    plus = 1;
+                     if(plus){
+            for(int m = 0; m < (maxsize - ans1.size())-1; m++){
+                ans1.push_back(0);
+            }
+        }
+           else{
+            for(int m = 0; m < (maxsize - ans1.size()); m++){
+                ans1.push_back(0);
+            }
+        }
+                }
+            }
+            else {
+                if (multiplication >= 10) {
+                    carry = multiplication / 10;
+                    int result = multiplication % 10;
+                    ans1.push_back(result);
+                } else {
+                    int result = multiplication;
+                    ans1.push_back(result);
+                }
+            }
+        }
+        
+        result.push_back(ans1);
+    }
+    //till now multiplication is working fine
+
+vector<int> cresult;
+int acarry = 0;
+
+sort(result.begin(), result.end());
+// for (int i = 0; i < result.size(); i++) {
+//     int add = 0; // Initialize add
+//     acarry = 0;
+//     for (int j = 0; j < ; j++) { // Correct loop range
+//         add += result[j][i] + acarry;
+
+//         if (j == result.size() - 1) {
+//             cresult.push_back(add);
+//         } else {
+//             if (add >= 10) {
+//                 int asit = add % 10;
+//                 acarry = add / 10;
+//                 cresult.push_back(asit);
+//             } else {
+//                 int asit = add;
+//                 cresult.push_back(asit);
+//                 acarry = 0; // Reset carry for the next iteration
+//             }
+//         }
+//     }
+// }
+
+for (const auto &layer : result) {
+        for (auto it = layer.begin(); it != layer.end(); ++it) {
+            cout << *it;
+        }
+        cout << endl;
+    }
+
+// ...
+
+}
