@@ -1,0 +1,126 @@
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+    string a, b;
+    vector<int> veca, vecb; // vector to gather integers from string
+    cin >> a >> b;
+
+    // gathering numbers
+    if (a.size() > b.size()) {
+        for (int i = 0; i < a.size(); i++) {
+            veca.push_back(a[i] - '0');
+            if (i < b.size()) {
+                vecb.push_back(b[i] - '0');
+            }
+        }
+    } else if (a.size() <= b.size()) {
+        for (int i = 0; i < b.size(); i++) {
+            veca.push_back(b[i] - '0');
+            if (i < a.size()) {
+                vecb.push_back(a[i] - '0');
+            }
+        }
+    }
+
+    // multiplication
+    reverse(veca.begin(), veca.end());
+    reverse(vecb.begin(), vecb.end());
+    vector<vector<int>> result; // 2D vector for multiplication results
+
+    int carry = 0, maxsize = 0;
+    //maxsize = (veca.size() + vecb.size()) - 1;
+
+    for (int i = 0; i < vecb.size(); i++) { //hierarchy 1
+        carry = 0; // carry for multiplication
+        int multiplication = 0;
+        vector<int> ans1 = {}; // vector for storing multiplied numbers
+
+        for(int k = 0; k < i; k++){ // insert 0 at the beginning,
+									// here is a problem
+            ans1.push_back(0);		// if last number is >= 10, then i need to add 1 less 0						// than maxsize - ans1.size() - 1
+        }
+
+        for (int j = 0; j < veca.size(); j++){ // hierarchy 2
+            multiplication = (veca[j] * vecb[i]) + carry; // multiplier
+            if (j == veca.size() - 1){ // inserting last value of multiplication,
+                if(multiplication >= 10){
+                    string con = to_string(multiplication);
+                    for(int ab = con.size()-1; ab >= 0;ab--){
+                        ans1.push_back(con[ab] - '0');
+                    }
+                }
+                else{
+                    ans1.push_back(multiplication);
+                }
+                }
+
+            else { //inserting multiplication value if its not the last number,
+                if (multiplication >= 10) { //i.e i need to consider carrying
+                    carry = multiplication / 10;
+                    int result = multiplication % 10;
+                    ans1.push_back(result);
+        
+                } 
+				else {
+                    int result = multiplication;
+                    ans1.push_back(result);
+    
+                }
+            }
+        }
+        if (ans1.size() >= maxsize) {
+            maxsize = ans1.size();
+        }
+        result.push_back(ans1);
+    }
+//till now multiplication is working fine
+
+vector<int> cresult;
+int acarry = 0;
+
+//sort(result.begin(), result.end()); // sorting vector
+for (int i = 0; i < maxsize; i++) {  // Loop over the columns
+    int add = 0; // Initialize add
+    //acarry = 0;
+
+    for (int j = 0; j < result.size(); j++) {  // Loop over the rows
+        if (i < result[j].size()) {
+            add += result[j][i] + acarry;
+            acarry = 0;
+        } else {
+            add += 0;  // Add carry if the column size is less than i
+        }
+
+        if (j == result.size() - 1) {  // If it's the last row
+            if (add >= 10) {
+                int asit = add % 10;
+                acarry = add / 10;
+                cresult.push_back(asit);
+                //cout << asit;
+            } else {
+                int asit = add;
+                cresult.push_back(asit);
+                //acarry = 0; // Reset carry for the next iteration
+                //cout << asit;
+            }
+        }
+    }
+}
+
+
+// for (const auto &layer : result) {
+//         for (auto it = layer.begin(); it != layer.end(); ++it) {
+//             cout << *it;
+//         }
+//         cout << endl;
+//     }
+
+// ...
+for(auto it = cresult.rbegin(); it != cresult.rend();it++){
+    cout << *it;
+}
+
+
+}
